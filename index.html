@@ -28,13 +28,63 @@
             align-items: center;
             min-height: 100vh;
             text-align: center;
+            overflow-x: hidden; /* Prevent side scrolling */
         }
 
+        /* --- NEW LOADING SCREEN CSS --- */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000000;
+            z-index: 9999; /* Sits on top of everything */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-out, visibility 1s;
+        }
+        
+        /* Hide loader class */
+        .loader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-logo {
+            font-family: var(--font-primary);
+            font-size: 3em;
+            color: var(--color-gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            animation: pulse-gold 2s infinite;
+        }
+
+        .loader-spinner {
+            width: 40px; height: 40px;
+            border: 3px solid rgba(255, 182, 6, 0.3);
+            border-top: 3px solid var(--color-gold);
+            border-radius: 50%;
+            margin-top: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes pulse-gold {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- EXISTING STYLES --- */
         .container {
             width: 90%;
             max-width: 500px;
             padding: 20px;
-            padding-bottom: 80px; /* Space for the install button */
+            padding-bottom: 80px; 
         }
 
         .header { padding: 40px 0 30px; }
@@ -58,7 +108,10 @@
             background: linear-gradient(180deg, rgba(0,0,0,0.5), rgba(0,0,0,0.8));
             padding: 20px 0;
             border-radius: 10px;
+            /* Simple fade in for main content */
+            animation: fadeIn 2s ease-in;
         }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .cta-heading {
             font-size: 1.6em;
@@ -101,9 +154,9 @@
             margin-top: auto; padding: 20px 0; font-size: 0.8em; color: #888;
         }
 
-        /* --- INSTALL DIALOG STYLES (NEW) --- */
+        /* --- INSTALL DIALOG STYLES --- */
         .install-container {
-            display: none; /* Hidden by default */
+            display: none; 
             position: fixed;
             bottom: 20px;
             left: 50%;
@@ -146,6 +199,11 @@
 </head>
 <body>
 
+    <div id="loader">
+        <div class="loader-logo">THE ROYAL<br>PLATTERS</div>
+        <div class="loader-spinner"></div>
+    </div>
+
     <div class="container">
         <header class="header">
             <h1 class="logo-text">THE ROYAL PLATTERS</h1>
@@ -155,7 +213,7 @@
         <section class="hero">
             <h2 class="cta-heading">Ready for the Feast?</h2>
             <a href="https://qr.posease.com/app/68e23b3d2462f2a9181bef78" class="order-button">
-                Order Now
+                Order Delivery Now
             </a>
             <ul class="feature-list">
                 <li>BIRYANI Specials</li>
@@ -166,9 +224,9 @@
 
         <section class="details-section">
             <h3>Our Location</h3>
-            <p>Find us easily near Jagan Theatre, Ramanathapuram. <br>Use this app for fastest delivery!</p>
+            <p>Find us easily near **Jagan Theatre, Ramanathapuram**. <br>Use this app for fastest delivery!</p>
             <h3>Seamless Ordering</h3>
-            <p>Welcome to the official app for THE ROYAL PLATTERS. Tap the button above to view our full menu.</p>
+            <p>Welcome to the official app for **THE ROYAL PLATTERS**. Tap the button above to view our full menu.</p>
         </section>
         
         <footer class="footer">
@@ -197,22 +255,32 @@
         });
       }
 
-      // 2. Install Logic
+      // 2. Animation Logic (Fade out loader)
+      window.addEventListener("load", function () {
+          const loader = document.getElementById("loader");
+          // Wait 2 seconds so people see the logo, then fade out
+          setTimeout(function() {
+              loader.classList.add("loader-hidden");
+              
+              // Remove it from the HTML completely after fade finishes
+              loader.addEventListener("transitionend", function() {
+                  document.body.removeChild(loader);
+              });
+          }, 2000); 
+      });
+
+      // 3. Install Dialog Logic
       let deferredPrompt;
       const installContainer = document.getElementById('install-container');
       const installBtn = document.getElementById('install-btn');
       const iosText = document.getElementById('ios-instructions');
 
-      // Check if user is on iPhone (iOS)
       const isIos = () => {
         const userAgent = window.navigator.userAgent.toLowerCase();
         return /iphone|ipad|ipod/.test( userAgent );
       }
-
-      // Check if app is already installed (standalone mode)
       const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
 
-      // A. Logic for Android / Chrome
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
@@ -230,7 +298,6 @@
         }
       });
 
-      // B. Logic for iPhone
       if (isIos() && !isInStandaloneMode()) {
         installContainer.style.display = 'block';
         installBtn.style.display = 'none';
