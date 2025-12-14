@@ -1,11 +1,11 @@
 {
-  "background_color": "#ffffff",
+  "background_color": "#1C1C1C",
   "dir": "ltr",
   "display": "standalone",
-  "name": "iskutty1-spec.github",
+  "name": "THE ROYAL PLATTERS",
   "orientation": "any",
   "scope": "/",
-  "short_name": "iskutty1-spec.github",
-  "start_url": "/",
-  "theme_color": "#ffffff"
+  "short_name": "Royal Platters",
+  "start_url": "/the-royal-platters/",
+  "theme_color": "#FFB606"
 }
