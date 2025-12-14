@@ -8,16 +8,15 @@
     <link rel="manifest" href="/the-royal-platters/manifest.json">
 
     <style>
-        /* Define Colors and Fonts */
+        /* --- BRANDING STYLES --- */
         :root {
-            --color-black: #1C1C1C; /* Eerie Black */
-            --color-gold: #FFB606;  /* UCLA Gold (Vibrant) */
+            --color-black: #1C1C1C; 
+            --color-gold: #FFB606; 
             --color-white: #F5F5F5;
             --font-primary: 'Georgia', serif;
             --font-secondary: 'Arial', sans-serif;
         }
 
-        /* Reset and Base Styles */
         body {
             background-color: var(--color-black);
             color: var(--color-white);
@@ -35,12 +34,10 @@
             width: 90%;
             max-width: 500px;
             padding: 20px;
+            padding-bottom: 80px; /* Space for the install button */
         }
 
-        /* Header / Logo Section */
-        .header {
-            padding: 40px 0 30px;
-        }
+        .header { padding: 40px 0 30px; }
         .logo-text {
             font-family: var(--font-primary);
             font-size: 2.5em;
@@ -56,7 +53,6 @@
             font-weight: 300;
         }
 
-        /* Hero Section (The Main CTA) */
         .hero {
             margin-bottom: 40px;
             background: linear-gradient(180deg, rgba(0,0,0,0.5), rgba(0,0,0,0.8));
@@ -70,7 +66,6 @@
             color: var(--color-gold);
         }
 
-        /* Order Button Styling */
         .order-button {
             display: inline-block;
             background-color: var(--color-gold);
@@ -85,49 +80,66 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .order-button:hover {
-            background-color: #FFD64D; /* Lighter gold on hover */
-        }
-
-        /* Details Section */
+        
         .details-section {
             border-top: 1px solid rgba(255, 182, 6, 0.2);
             padding-top: 30px;
             margin-top: 30px;
             text-align: left;
         }
-        .details-section h3 {
-            color: var(--color-gold);
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-        .details-section p {
-            margin: 5px 0 20px 0;
-            line-height: 1.6;
-        }
+        .details-section h3 { color: var(--color-gold); font-size: 1.2em; margin-bottom: 10px; }
+        .details-section p { margin: 5px 0 20px 0; line-height: 1.6; }
+        
         .feature-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-around;
+            list-style: none; padding: 0; margin-top: 10px;
+            display: flex; justify-content: space-around;
         }
-        .feature-list li {
-            font-size: 0.9em;
-            color: var(--color-white);
-        }
-        .feature-list li:before {
-            content: "•";
-            color: var(--color-gold);
-            margin-right: 5px;
+        .feature-list li { font-size: 0.9em; color: var(--color-white); }
+        .feature-list li:before { content: "•"; color: var(--color-gold); margin-right: 5px; }
+
+        .footer {
+            margin-top: auto; padding: 20px 0; font-size: 0.8em; color: #888;
         }
 
-        /* Footer */
-        .footer {
-            margin-top: auto; /* Pushes the footer to the bottom */
-            padding: 20px 0;
-            font-size: 0.8em;
-            color: #888;
+        /* --- INSTALL DIALOG STYLES (NEW) --- */
+        .install-container {
+            display: none; /* Hidden by default */
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: rgba(28, 28, 28, 0.95);
+            border: 1px solid var(--color-gold);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .install-btn {
+            background-color: var(--color-gold);
+            color: var(--color-black);
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .ios-instructions {
+            display: none;
+            color: var(--color-white);
+            font-size: 0.9rem;
+        }
+        .ios-instructions p { margin: 5px 0; }
+        .ios-close {
+            margin-top:10px; background:transparent; border:1px solid #FFB606; 
+            color:#FFB606; padding:5px 10px; border-radius:5px;
         }
 
     </style>
@@ -135,7 +147,6 @@
 <body>
 
     <div class="container">
-        
         <header class="header">
             <h1 class="logo-text">THE ROYAL PLATTERS</h1>
             <p class="tagline">The Taste of Royalty, Near You</p>
@@ -143,11 +154,9 @@
 
         <section class="hero">
             <h2 class="cta-heading">Ready for the Feast?</h2>
-            
             <a href="https://qr.posease.com/app/68e23b3d2462f2a9181bef78" class="order-button">
-                Order Delivery Now
+                Order Now
             </a>
-
             <ul class="feature-list">
                 <li>BIRYANI Specials</li>
                 <li>CHINESE Favorites</li>
@@ -157,29 +166,77 @@
 
         <section class="details-section">
             <h3>Our Location</h3>
-            <p>
-                Find us easily near **Jagan Theatre, Ramanathapuram**. <br>
-                Use this app for fastest delivery to your location!
-            </p>
-            
+            <p>Find us easily near Jagan Theatre, Ramanathapuram. <br>Use this app for fastest delivery!</p>
             <h3>Seamless Ordering</h3>
-            <p>
-                Welcome to the official app for **THE ROYAL PLATTERS**. Tap the button above to view our full menu and place your order instantly for quick pickup or delivery.
-            </p>
+            <p>Welcome to the official app for THE ROYAL PLATTERS. Tap the button above to view our full menu.</p>
         </section>
         
+        <footer class="footer">
+            &copy; 2025 The Royal Platters. All Rights Reserved.
+        </footer>
     </div>
 
-    <footer class="footer">
-        &copy; 2025 The Royal Platters. All Rights Reserved.
-    </footer>
+    <div id="install-container" class="install-container">
+        <button id="install-btn" class="install-btn">
+            📲 Install App for Best Experience
+        </button>
+
+        <div id="ios-instructions" class="ios-instructions">
+            <p>To install on iPhone:</p>
+            <p>1. Tap the <strong>Share</strong> button <span style="font-size:1.2em">⎋</span></p>
+            <p>2. Scroll down and tap <strong>"Add to Home Screen"</strong></p>
+            <button class="ios-close" onclick="document.getElementById('install-container').style.display='none'">Close</button>
+        </div>
+    </div>
 
     <script>
+      // 1. Register Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/the-royal-platters/pwabuilder-sw.js'); 
         });
       }
+
+      // 2. Install Logic
+      let deferredPrompt;
+      const installContainer = document.getElementById('install-container');
+      const installBtn = document.getElementById('install-btn');
+      const iosText = document.getElementById('ios-instructions');
+
+      // Check if user is on iPhone (iOS)
+      const isIos = () => {
+        const userAgent = window.navigator.userAgent.toLowerCase();
+        return /iphone|ipad|ipod/.test( userAgent );
+      }
+
+      // Check if app is already installed (standalone mode)
+      const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+      // A. Logic for Android / Chrome
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installContainer.style.display = 'block';
+        installBtn.style.display = 'block';
+      });
+
+      installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`User response: ${outcome}`);
+          deferredPrompt = null;
+          installContainer.style.display = 'none';
+        }
+      });
+
+      // B. Logic for iPhone
+      if (isIos() && !isInStandaloneMode()) {
+        installContainer.style.display = 'block';
+        installBtn.style.display = 'none';
+        iosText.style.display = 'block';
+      }
     </script>
+
 </body>
 </html>
