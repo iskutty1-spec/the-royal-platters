@@ -28,15 +28,42 @@
             align-items: center;
             min-height: 100vh;
             text-align: center;
-            overflow-x: hidden; /* Prevent side scrolling */
+            overflow-x: hidden;
         }
 
-        /* --- NEW LOADING SCREEN CSS --- */
+        /* --- NEW VIDEO BACKGROUND CSS --- */
+        #bg-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -2; /* Pushes video to the very back */
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Dark overlay to make Gold text readable */
+            background: rgba(0, 0, 0, 0.7); 
+            z-index: -1; /* Sits on top of video, behind content */
+        }
+
+        /* --- LOADER STYLES --- */
         #loader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #000000;
-            z-index: 9999; /* Sits on top of everything */
+            /* Ensure you uploaded bg-loader.jpg */
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('bg-loader.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            
+            z-index: 9999;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -44,18 +71,16 @@
             transition: opacity 1s ease-out, visibility 1s;
         }
         
-        /* Hide loader class */
         .loader-hidden {
             opacity: 0;
             visibility: hidden;
         }
 
-        .loader-logo {
-            font-family: var(--font-primary);
-            font-size: 3em;
-            color: var(--color-gold);
-            text-transform: uppercase;
-            letter-spacing: 4px;
+        .loader-logo-img {
+            width: 150px; 
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
             animation: pulse-gold 2s infinite;
         }
 
@@ -64,13 +89,12 @@
             border: 3px solid rgba(255, 182, 6, 0.3);
             border-top: 3px solid var(--color-gold);
             border-radius: 50%;
-            margin-top: 20px;
             animation: spin 1s linear infinite;
         }
 
         @keyframes pulse-gold {
             0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.9; }
             100% { transform: scale(1); opacity: 1; }
         }
 
@@ -79,12 +103,16 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* --- EXISTING STYLES --- */
+        /* --- MAIN CONTENT STYLES --- */
         .container {
             width: 90%;
             max-width: 500px;
             padding: 20px;
             padding-bottom: 80px; 
+            
+            /* CRITICAL CHANGE: This ensures content sits ON TOP of the video */
+            position: relative;
+            z-index: 1; 
         }
 
         .header { padding: 40px 0 30px; }
@@ -105,10 +133,10 @@
 
         .hero {
             margin-bottom: 40px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.5), rgba(0,0,0,0.8));
+            /* Made slightly more transparent so video shows through */
+            background: linear-gradient(180deg, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
             padding: 20px 0;
             border-radius: 10px;
-            /* Simple fade in for main content */
             animation: fadeIn 2s ease-in;
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -151,7 +179,7 @@
         .feature-list li:before { content: "•"; color: var(--color-gold); margin-right: 5px; }
 
         .footer {
-            margin-top: auto; padding: 20px 0; font-size: 0.8em; color: #888;
+            margin-top: auto; padding: 20px 0; font-size: 0.8em; color: #ccc;
         }
 
         /* --- INSTALL DIALOG STYLES --- */
@@ -199,8 +227,12 @@
 </head>
 <body>
 
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="background.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
     <div id="loader">
-        <div class="loader-logo">THE ROYAL<br>PLATTERS</div>
+        <img src="icon-512.png" alt="The Royal Platters Logo" class="loader-logo-img">
         <div class="loader-spinner"></div>
     </div>
 
@@ -236,9 +268,8 @@
 
     <div id="install-container" class="install-container">
         <button id="install-btn" class="install-btn">
-            📲 Install App for Best Experience
+             Install App
         </button>
-
         <div id="ios-instructions" class="ios-instructions">
             <p>To install on iPhone:</p>
             <p>1. Tap the <strong>Share</strong> button <span style="font-size:1.2em">⎋</span></p>
@@ -261,8 +292,6 @@
           // Wait 2 seconds so people see the logo, then fade out
           setTimeout(function() {
               loader.classList.add("loader-hidden");
-              
-              // Remove it from the HTML completely after fade finishes
               loader.addEventListener("transitionend", function() {
                   document.body.removeChild(loader);
               });
