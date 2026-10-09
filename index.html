@@ -20,7 +20,7 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 // Paste your Supabase project URL and publishable key here after creating the project.
 const SUPABASE_URL = 'https://zcolftcwsstdtzgjykdj.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'YOUR_SUPABASE_PUBLISHABLE_KEY';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_SOZWH_zfqBua2eISALpPRg_q2DyBqyy';
 const configured = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('YOUR_') && !SUPABASE_PUBLISHABLE_KEY.includes('YOUR_');
 const supabase = configured ? createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
 const $ = id => document.getElementById(id); $('year').textContent = new Date().getFullYear();
