@@ -1,342 +1,839 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE ROYAL PLATTERS - Order Now</title>
-    
-    <link rel="manifest" href="/the-royal-platters/manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1C1C1C">
+  <meta name="description" content="Discover The Royal Platters in Ramanathapuram. Explore our menu, contact us, find directions and order through WhatsApp.">
 
-    <style>
-        /* --- BRANDING STYLES --- */
-        :root {
-            --color-black: #1C1C1C; 
-            --color-gold: #FFB606; 
-            --color-white: #F5F5F5;
-            --font-primary: 'Georgia', serif;
-            --font-secondary: 'Arial', sans-serif;
-        }
+  <title>THE ROYAL PLATTERS | Order & Explore</title>
 
-        body {
-            background-color: var(--color-black);
-            color: var(--color-white);
-            font-family: var(--font-secondary);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-            overflow-x: hidden;
-        }
+  <link rel="manifest" href="/the-royal-platters/manifest.json">
+  <link rel="icon" href="icon-512.png">
+  <link rel="preload" as="image" href="bg-loader.jpg">
 
-        /* --- NEW VIDEO BACKGROUND CSS --- */
-        #bg-video {
-           position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            object-fit: cover; /* Ensures video is centered and covers screen */
-        }
+  <style>
+    :root {
+      --black: #1C1C1C;
+      --gold: #FFB606;
+      --white: #F5F5F5;
+      --muted: #D0D0D0;
+      --panel: rgba(28, 28, 28, 0.88);
+      --border: rgba(255, 182, 6, 0.35);
+      --radius: 16px;
+    }
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* Dark overlay to make Gold text readable */
-            background: rgba(0, 0, 0, 0.7); 
-            z-index: -1; /* Sits on top of video, behind content */
-        }
+    * { box-sizing: border-box; }
 
-        /* --- LOADER STYLES --- */
-        #loader {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            /* Ensure you uploaded bg-loader.jpg */
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('bg-loader.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 1s ease-out, visibility 1s;
-        }
-        
-        .loader-hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 20px;
+    }
 
-        .loader-logo-img {
-            width: 150px; 
-            height: auto;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
-            animation: pulse-gold 2s infinite;
-        }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: var(--black);
+      color: var(--white);
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
+      line-height: 1.6;
+    }
 
-        .loader-spinner {
-            width: 40px; height: 40px;
-            border: 3px solid rgba(255, 182, 6, 0.3);
-            border-top: 3px solid var(--color-gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+    a { color: inherit; }
 
-        @keyframes pulse-gold {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.9; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+    button, a { -webkit-tap-highlight-color: transparent; }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+    button { font: inherit; }
 
-        /* --- MAIN CONTENT STYLES --- */
-        .container {
-            width: 90%;
-            max-width: 500px;
-            padding: 20px;
-            padding-bottom: 80px; 
-            
-            /* CRITICAL CHANGE: This ensures content sits ON TOP of the video */
-            position: relative;
-            z-index: 1; 
-        }
+    a:focus-visible, button:focus-visible {
+      outline: 3px solid var(--white);
+      outline-offset: 4px;
+    }
 
-        .header { padding: 40px 0 30px; }
-        .logo-text {
-            font-family:'Times New Roman', Times, serif;
-            font-size: 2.5em;
-            color: var(--color-gold);
-            letter-spacing: 1px;
-            margin: 0;
-        }
-        .tagline {
-            font-size: 1.1em;
-            color: var(--color-white);
-            margin-top: 5px;
-            font-weight: bold;
-        }
+    #bg-video, .overlay {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
 
-        .hero {
-            margin-bottom: 40px;
-            /* Made slightly more transparent so video shows through */
-            background: linear-gradient(180deg, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
-            padding: 20px 0;
-            border-radius: 10px;
-            animation: fadeIn 2s ease-in;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    #bg-video {
+      z-index: 0;
+      object-fit: cover;
+      background: url("bg-loader.jpg") center / cover no-repeat;
+    }
 
-        .cta-heading {
-            font-size: 1.6em;
-            margin-bottom: 15px;
-            color: var(--color-gold);
-        }
+    .overlay {
+      z-index: 1;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, .78),
+        rgba(0, 0, 0, .68) 50%,
+        rgba(0, 0, 0, .88)
+      );
+    }
 
-        .order-button {
-            display: inline-block;
-            background-color: var(--color-gold);
-            color: var(--color-black);
-            text-decoration: none;
-            padding: 15px 35px;
-            font-size: 1.4em;
-            font-weight: bold;
-            border-radius: 5px;
-            transition: background-color 0.2s ease;
-            box-shadow: 0 4px 10px rgba(255, 182, 6, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .details-section {
-            border-top: 1px solid rgba(255, 182, 6, 0.2);
-            padding-top: 30px;
-            margin-top: 30px;
-            text-align: left;
-        }
-        .details-section h3 { color: var(--color-gold); font-size: 1.2em; margin-bottom: 10px; }
-        .details-section p { margin: 5px 0 20px 0; line-height: 1.6; }
-        
-        .feature-list {
-            list-style: none; padding: 0; margin-top: 10px;
-            display: flex; justify-content: space-around;
-        }
-        .feature-list li { font-size: 0.9em; color: var(--color-white); }
-        .feature-list li:before { content: "•"; color: var(--color-gold); margin-right: 5px; }
+    .container {
+      position: relative;
+      z-index: 2;
+      width: min(100% - 32px, 560px);
+      margin: 0 auto;
+      padding-bottom: 36px;
+    }
 
-        .footer {
-            margin-top: auto; padding: 20px 0; font-size: 0.8em; color: #ccc;
-        }
+    .header { padding: 42px 0 24px; }
 
-        /* --- INSTALL DIALOG STYLES --- */
-        .install-container {
-            display: none; 
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            background: rgba(28, 28, 28, 0.95);
-            border: 1px solid var(--color-gold);
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            z-index: 1000;
-            text-align: center;
-        }
+    .logo-text {
+      margin: 0;
+      color: var(--gold);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 8vw, 3rem);
+      line-height: 1.15;
+      letter-spacing: 1px;
+      text-shadow: 0 3px 20px rgba(0,0,0,.55);
+    }
 
-        .install-btn {
-            background-color: var(--color-gold);
-            color: var(--color-black);
-            border: none;
-            padding: 12px 20px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
+    .tagline {
+      margin: 12px 0 0;
+      font-size: .98rem;
+      color: var(--white);
+    }
 
-        .ios-instructions {
-            display: none;
-            color: var(--color-white);
-            font-size: 0.9rem;
-        }
-        .ios-instructions p { margin: 5px 0; }
-        .ios-close {
-            margin-top:10px; background:transparent; border:1px solid #FFB606; 
-            color:#FFB606; padding:5px 10px; border-radius:5px;
-        }
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--gold);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
 
-    </style>
+    .panel {
+      margin: 18px 0;
+      padding: 24px 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 12px 36px rgba(0,0,0,.22);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    h2, h3 {
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.45rem, 5vw, 1.9rem);
+      line-height: 1.3;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      color: var(--gold);
+      font-size: 1.2rem;
+    }
+
+    p { margin: 8px 0 16px; }
+
+    .muted { color: var(--muted); font-size: .94rem; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 13px 20px;
+      border: 1px solid var(--gold);
+      border-radius: 8px;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 1rem;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+
+    .button:active { transform: scale(.98); }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--gold);
+    }
+
+    .button.full { width: 100%; }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .hero { padding: 28px 18px; }
+
+    .hero .button {
+      width: 100%;
+      margin-top: 8px;
+      font-size: 1.1rem;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .chip {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      background: rgba(0,0,0,.25);
+      color: var(--white);
+      font-size: .8rem;
+    }
+
+    .offers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+      text-align: left;
+    }
+
+    .offer {
+      min-width: 0;
+      padding: 16px 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(0,0,0,.25);
+    }
+
+    .offer-icon {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.8rem;
+    }
+
+    .offer h3 { font-size: 1.08rem; }
+
+    .offer p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .details {
+      text-align: left;
+    }
+
+    .detail-row {
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .detail-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .detail-row h3 { margin-bottom: 4px; }
+
+    .detail-row p { margin: 0; }
+
+    .detail-row a {
+      color: var(--white);
+      text-decoration-color: var(--gold);
+      text-underline-offset: 4px;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .social-grid .button { width: 100%; }
+
+    .footer {
+      padding: 20px 0 10px;
+      color: #ccc;
+      font-size: .82rem;
+    }
+
+    .footer a { color: var(--gold); }
+
+    .floating-whatsapp {
+      position: fixed;
+      z-index: 10;
+      right: 16px;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 58px;
+      height: 58px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      background: var(--black);
+      color: var(--gold);
+      box-shadow: 0 5px 24px rgba(0,0,0,.5);
+      font-size: 1.55rem;
+      text-decoration: none;
+    }
+
+    /* Initial loading screen */
+    #loader {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        linear-gradient(rgba(0,0,0,.82), rgba(0,0,0,.88)),
+        url("bg-loader.jpg") center / cover no-repeat,
+        var(--black);
+      transition: opacity .45s ease, visibility .45s ease;
+    }
+
+    #loader.loader-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-logo {
+      width: min(150px, 40vw);
+      height: auto;
+      margin-bottom: 24px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .spinner {
+      width: 38px;
+      height: 38px;
+      border: 3px solid rgba(255,182,6,.25);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    .loader-label {
+      margin-top: 15px;
+      color: var(--gold);
+      font-size: .85rem;
+      letter-spacing: 1px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes pulse {
+      50% { transform: scale(1.04); opacity: .88; }
+    }
+
+    /* App installation prompt */
+    #install-container {
+      position: fixed;
+      right: 12px;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      left: 12px;
+      z-index: 100;
+      display: none;
+      width: min(420px, calc(100% - 24px));
+      margin: auto;
+      padding: 18px;
+      border: 1px solid var(--gold);
+      border-radius: 14px;
+      background: rgba(28,28,28,.98);
+      box-shadow: 0 8px 35px rgba(0,0,0,.6);
+      text-align: center;
+    }
+
+    #install-container p { margin: 6px 0 12px; }
+
+    #install-btn { width: 100%; }
+
+    #ios-instructions { display: none; }
+
+    .close-button {
+      margin-top: 10px;
+      padding: 8px 15px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    .noscript {
+      margin: 16px 0;
+      color: var(--gold);
+    }
+
+    @media (max-width: 380px) {
+      .button-row { grid-template-columns: 1fr; }
+      .offers-grid { grid-template-columns: 1fr; }
+      .header { padding-top: 30px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    @media (max-height: 600px) {
+      .header { padding-top: 20px; }
+      .loader-logo { width: 100px; }
+    }
+  </style>
 </head>
+
 <body>
+  <!-- Background video: keep background.mp4 in this folder -->
+  <video
+    id="bg-video"
+    autoplay
+    muted
+    loop
+    playsinline
+    webkit-playsinline
+    preload="none"
+    poster="bg-loader.jpg"
+    aria-hidden="true"
+  >
+    <source src="background.mp4" type="video/mp4">
+  </video>
 
-    <video autoplay muted loop playsinline webkit-playsinline id="bg-video" poster="bg-loader.jpg">
-        <source src="background.mp4" type="video/mp4">
-    </video>
-    <div class="overlay"></div>
-    <div id="loader">
-        <img src="icon-512.png" alt="The Royal Platters Logo" class="loader-logo-img">
-        <div class="loader-spinner"></div>
-    </div>
+  <div class="overlay" aria-hidden="true"></div>
 
-    <div class="container">
-        <header class="header">
-            <h1 class="logo-text">The Royal Platters</h1>
-            <p class="tagline">“Authentic Taste Served with Royal Elegance”</p>
-        </header>
+  <div id="loader" role="status" aria-label="Loading The Royal Platters">
+    <img
+      src="icon-512.png"
+      alt="The Royal Platters"
+      class="loader-logo"
+      fetchpriority="high"
+      onerror="this.style.display='none'"
+    >
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="loader-label">PREPARING YOUR ROYAL EXPERIENCE</div>
+  </div>
 
-        <section class="hero">
-            <h2 class="cta-heading">Premium Taste Starts With One Tap</h2>
-            <a href="https://qr.posease.com/app/68e23b3d2462f2a9181bef78" class="order-button">
-                Our Menu
-            </a>
-            <ul class="feature-list">
-                <li>BIRYANI</li>
-                <li>CHINESE</li>
-                <li>DRINKS</li>
-                <li>CAFÉ DELIGHTS</li>
-            </ul>
-        </section>
+  <main class="container">
+    <header class="header">
+      <p class="eyebrow">Welcome to</p>
+      <h1 class="logo-text">THE ROYAL<br>PLATTERS</h1>
+      <p class="tagline">Authentic Taste Served with Royal Elegance</p>
 
-        <section class="details-section">
-            <h3>Seamless Ordering</h3>
-            <p>Welcome to the official app for THE ROYAL PLATTERS. Tap the button above to view our full menu. <br>Use this app for home delivery!</p>
-            <h3>Our Location</h3>
-            <p>Find us easily near Jagan Theatre, Ramanathapuram.</p>
-            <h3>For Contact</h3>
-            <p>842 88 11 444</p>
-        </section>
-        
-        <footer class="footer">
-            &copy; 2025 The Royal Platters. All Rights Reserved.
-        </footer>
-    </div>
+      <div class="features" aria-label="Our food categories">
+        <span class="chip">Biryani</span>
+        <span class="chip">Pizza & Burgers</span>
+        <span class="chip">Chinese</span>
+        <span class="chip">Drinks & Desserts</span>
+      </div>
+    </header>
 
-    <div id="install-container" class="install-container">
-        <button id="install-btn" class="install-btn">
-             Install App
+    <!-- Main menu and ordering actions -->
+    <section class="panel hero">
+      <p class="eyebrow">Your next favourite meal awaits</p>
+      <h2>Premium Taste Starts With One Tap</h2>
+      <p class="muted">
+        Explore our menu, discover your favourites and get in touch with us.
+      </p>
+
+      <a
+        class="button full"
+        href="https://qr.posease.com/app/68e23b3d2462f2a9181bef78"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Explore Our Menu
+      </a>
+
+      <div class="button-row">
+        <a
+          class="button secondary"
+          href="https://wa.me/918428811444?text=Assalamu%20alaikum%2C%20The%20Royal%20Platters!%20I%20would%20like%20to%20enquire%20about%20ordering%20food."
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Order on WhatsApp
+        </a>
+
+        <a
+          class="button secondary"
+          href="https://www.google.com/maps/place/THE+ROYAL+PLATTERS/@10.0329,78.15,10z/data=!4m6!3m5!1s0x3b0199487a1c5ac7:0xadf04b345dd85f47!8m2!3d9.3663054!4d78.8362034!16s%2Fg%2F11yv8d1fm5?entry=ttu"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Get Directions
+        </a>
+      </div>
+    </section>
+
+    <!-- Offers and highlights: no unverified discounts advertised -->
+    <section class="panel" id="offers">
+      <p class="eyebrow">Something for every craving</p>
+      <h2>Royal Highlights</h2>
+      <p class="muted">
+        Discover our food favourites. Contact us to check today's offers and availability.
+      </p>
+
+      <div class="offers-grid">
+        <article class="offer">
+          <span class="offer-icon" aria-hidden="true">🍛</span>
+          <h3>Biryani Favourites</h3>
+          <p>Make your meal special with flavour-packed biryani.</p>
+        </article>
+
+        <article class="offer">
+          <span class="offer-icon" aria-hidden="true">🍕</span>
+          <h3>Café Classics</h3>
+          <p>Pizza, burgers, sandwiches, wraps and more.</p>
+        </article>
+
+        <article class="offer">
+          <span class="offer-icon" aria-hidden="true">🍟</span>
+          <h3>Snacks & Sides</h3>
+          <p>Explore tasty bites to enjoy with your meal.</p>
+        </article>
+
+        <article class="offer">
+          <span class="offer-icon" aria-hidden="true">🥤</span>
+          <h3>Drinks & Desserts</h3>
+          <p>Complete your meal with a refreshing treat.</p>
+        </article>
+      </div>
+
+      <a
+        class="button full"
+        style="margin-top:18px"
+        href="https://wa.me/918428811444?text=Hello%2C%20please%20share%20your%20current%20offers%20and%20combos."
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Ask About Current Offers
+      </a>
+    </section>
+
+    <!-- Location and contact details -->
+    <section class="panel details" id="contact">
+      <p class="eyebrow">We are happy to serve you</p>
+      <h2>Visit The Royal Platters</h2>
+
+      <div class="detail-row">
+        <h3>Our Location</h3>
+        <p>Near Jagan Theatre, Ramanathapuram, Tamil Nadu.</p>
+        <a
+          href="https://www.google.com/maps/place/THE+ROYAL+PLATTERS/@10.0329,78.15,10z/data=!4m6!3m5!1s0x3b0199487a1c5ac7:0xadf04b345dd85f47!8m2!3d9.3663054!4d78.8362034!16s%2Fg%2F11yv8d1fm5?entry=ttu"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open Google Maps →
+        </a>
+      </div>
+
+      <div class="detail-row">
+        <h3>Opening Hours</h3>
+        <p>Daily: 9:30 AM – 9:00 PM</p>
+        <p class="muted">Hours may vary on holidays. Please contact us to confirm.</p>
+      </div>
+
+      <div class="detail-row">
+        <h3>Call Us</h3>
+        <p><a href="tel:+918428811444">84288 11 444</a></p>
+      </div>
+
+      <div class="detail-row">
+        <h3>WhatsApp Us</h3>
+        <p>
+          <a
+            href="https://wa.me/918428811444?text=Hello%20The%20Royal%20Platters!"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Chat with our team →
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <!-- Social media and sharing -->
+    <section class="panel">
+      <p class="eyebrow">Stay connected</p>
+      <h2>Follow & Share</h2>
+      <p class="muted">
+        Stay connected with The Royal Platters and share the experience with your friends.
+      </p>
+
+      <div class="social-grid">
+        <a
+          class="button"
+          href="https://www.instagram.com/theroyalplatters/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Instagram
+        </a>
+
+        <button class="button secondary" id="share-btn" type="button">
+          Share Restaurant
         </button>
-        <div id="ios-instructions" class="ios-instructions">
-            <p>To install on iPhone:</p>
-            <p>1. Tap the <strong>Share</strong> button <span style="font-size:1.2em">⎋</span></p>
-            <p>2. Scroll down and tap <strong>"Add to Home Screen"</strong></p>
-            <button class="ios-close" onclick="document.getElementById('install-container').style.display='none'">Close</button>
-        </div>
+      </div>
+
+      <p id="share-status" class="muted" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- App installation entry point -->
+    <section class="panel" id="app-section">
+      <p class="eyebrow">Your restaurant shortcut</p>
+      <h2>Keep Us One Tap Away</h2>
+      <p class="muted">
+        Add The Royal Platters to your home screen for quick access.
+      </p>
+      <button class="button full" id="open-install" type="button">
+        Install / Add to Home Screen
+      </button>
+    </section>
+
+    <footer class="footer">
+      <p>© <span id="year">2026</span> THE ROYAL PLATTERS. All Rights Reserved.</p>
+      <p>Serving Ramanathapuram with royal taste.</p>
+      <a href="https://www.instagram.com/theroyalplatters/" target="_blank" rel="noopener noreferrer">
+        Follow us on Instagram
+      </a>
+    </footer>
+  </main>
+
+  <!-- Floating WhatsApp shortcut -->
+  <a
+    class="floating-whatsapp"
+    href="https://wa.me/918428811444?text=Hello%20The%20Royal%20Platters!%20I%20would%20like%20to%20place%20an%20order."
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Order from The Royal Platters on WhatsApp"
+    title="Order on WhatsApp"
+  >
+    WA
+  </a>
+
+  <!-- Install prompt and iPhone instructions -->
+  <section id="install-container" role="dialog" aria-labelledby="install-title" aria-modal="false">
+    <h3 id="install-title">Install The Royal Platters</h3>
+    <p class="muted">Access our restaurant page quickly from your home screen.</p>
+
+    <button class="button" id="install-btn" type="button">
+      Install App
+    </button>
+
+    <div id="ios-instructions">
+      <p><strong>To add on iPhone or iPad:</strong></p>
+      <p>1. Open this page in Safari.</p>
+      <p>2. Tap the Share icon.</p>
+      <p>3. Select “Add to Home Screen”.</p>
+      <p>4. Tap “Add” to finish.</p>
     </div>
 
-    <script>
-      // 1. Register Service Worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/the-royal-platters/pwabuilder-sw.js'); 
-        });
+    <p id="install-status" class="muted" role="status" aria-live="polite"></p>
+    <button class="close-button" id="close-install" type="button">Close</button>
+  </section>
+
+  <noscript>
+    <p class="noscript">JavaScript is disabled. You can still use the menu, contact and map links.</p>
+  </noscript>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = (id) => document.getElementById(id);
+
+      // Current year
+      $("year").textContent = new Date().getFullYear();
+
+      // Loader: dismiss after page load, with a timeout fallback.
+      let loaderRemoved = false;
+
+      function hideLoader() {
+        if (loaderRemoved) return;
+        loaderRemoved = true;
+
+        const loader = $("loader");
+        if (!loader) return;
+
+        loader.classList.add("loader-hidden");
+
+        window.setTimeout(() => {
+          loader.remove();
+        }, 600);
       }
 
-      // 2. Animation Logic (Fade out loader)
-      window.addEventListener("load", function () {
-          const loader = document.getElementById("loader");
-          // Wait 2 seconds so people see the logo, then fade out
-          setTimeout(function() {
-              loader.classList.add("loader-hidden");
-              loader.addEventListener("transitionend", function() {
-                  document.body.removeChild(loader);
-              });
-          }, 2000); 
-      });
+      window.addEventListener("load", hideLoader, { once: true });
+      window.setTimeout(hideLoader, 3500);
 
-      // 3. Install Dialog Logic
-      let deferredPrompt;
-      const installContainer = document.getElementById('install-container');
-      const installBtn = document.getElementById('install-btn');
-      const iosText = document.getElementById('ios-instructions');
+      // Video optimization: preserve the poster if video is unsupported,
+      // the user prefers reduced motion, or data saving is enabled.
+      const video = $("bg-video");
+      const connection = navigator.connection ||
+                         navigator.mozConnection ||
+                         navigator.webkitConnection;
+      const reducedMotion = window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      const isIos = () => {
-        const userAgent = window.navigator.userAgent.toLowerCase();
-        return /iphone|ipad|ipod/.test( userAgent );
+      if (video && (reducedMotion || (connection && connection.saveData))) {
+        video.pause();
+        video.removeAttribute("autoplay");
+        video.removeAttribute("src");
+        video.querySelectorAll("source").forEach((source) => source.remove());
+        video.load();
+      } else if (video) {
+        // Play is attempted without blocking page interaction.
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(() => {
+            // Poster/background remains visible if autoplay is blocked.
+          });
+        }
       }
-      const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
 
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        installContainer.style.display = 'block';
-        installBtn.style.display = 'block';
-      });
+      // Service worker registration. Keep this path aligned with your deployment.
+      if ("serviceWorker" in navigator && window.isSecureContext) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/the-royal-platters/pwabuilder-sw.js")
+            .catch((error) => {
+              console.error("Service worker registration failed:", error);
+            });
+        }, { once: true });
+      }
 
-      installBtn.addEventListener('click', async () => {
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          console.log(`User response: ${outcome}`);
-          deferredPrompt = null;
-          installContainer.style.display = 'none';
+      // Share API with clipboard fallback.
+      $("share-btn").addEventListener("click", async () => {
+        const shareData = {
+          title: "THE ROYAL PLATTERS",
+          text: "Discover The Royal Platters in Ramanathapuram. Explore our menu!",
+          url: window.location.href
+        };
+
+        const status = $("share-status");
+
+        try {
+          if (navigator.share) {
+            await navigator.share(shareData);
+            status.textContent = "Thanks for sharing!";
+          } else if (navigator.clipboard &&
+                     window.isSecureContext) {
+            await navigator.clipboard.writeText(shareData.url);
+            status.textContent = "Page link copied. Share it with your friends!";
+          } else {
+            window.prompt("Copy and share this restaurant link:", shareData.url);
+          }
+        } catch (error) {
+          if (error.name !== "AbortError") {
+            status.textContent = "Sharing was unavailable. You can copy the page URL from your browser.";
+          }
         }
       });
 
-      if (isIos() && !isInStandaloneMode()) {
-        installContainer.style.display = 'block';
-        installBtn.style.display = 'none';
-        iosText.style.display = 'block';
-      }
-    </script>
+      // PWA install support
+      let deferredPrompt = null;
+      const installBox = $("install-container");
+      const installButton = $("install-btn");
+      const installStatus = $("install-status");
+      const iosInstructions = $("ios-instructions");
 
+      const ua = navigator.userAgent || "";
+      const isIOS = /iphone|ipad|ipod/i.test(ua) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+      const isStandalone = window.matchMedia("(display-mode: standalone)").matches ||
+        navigator.standalone === true;
+
+      function openInstallDialog() {
+        if (isStandalone) {
+          installBox.style.display = "block";
+          installButton.style.display = "none";
+          iosInstructions.style.display = "none";
+          installStatus.textContent = "The app is already installed or running in app mode.";
+          return;
+        }
+
+        installBox.style.display = "block";
+
+        if (deferredPrompt) {
+          installButton.style.display = "block";
+          iosInstructions.style.display = "none";
+          installStatus.textContent = "";
+        } else if (isIOS) {
+          installButton.style.display = "none";
+          iosInstructions.style.display = "block";
+          installStatus.textContent = "";
+        } else {
+          installButton.style.display = "none";
+          iosInstructions.style.display = "none";
+          installStatus.textContent =
+            "If installation is available, use your browser menu and choose Install app or Add to Home Screen.";
+        }
+      }
+
+      $("open-install").addEventListener("click", openInstallDialog);
+      $("close-install").addEventListener("click", () => {
+        installBox.style.display = "none";
+      });
+
+      window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        deferredPrompt = event;
+      });
+
+      installButton.addEventListener("click", async () => {
+        if (!deferredPrompt) {
+          installStatus.textContent =
+            "Use your browser menu to install this page or add it to your home screen.";
+          return;
+        }
+
+        deferredPrompt.prompt();
+
+        try {
+          const choice = await deferredPrompt.userChoice;
+          installStatus.textContent = choice.outcome === "accepted"
+            ? "Installation accepted. Follow your browser's instructions to finish."
+            : "Installation was cancelled. You can try again later.";
+        } catch (error) {
+          installStatus.textContent = "Please try installing from your browser menu.";
+        }
+
+        deferredPrompt = null;
+        installButton.style.display = "none";
+      });
+
+      window.addEventListener("appinstalled", () => {
+        deferredPrompt = null;
+        installBox.style.display = "none";
+      });
+
+      // Show iPhone installation guidance when requested from the page.
+      // Avoid forcing a popup over the customer's browsing experience.
+    })();
+  </script>
 </body>
 </html>
-
-
